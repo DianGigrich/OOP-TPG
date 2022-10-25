@@ -1,8 +1,10 @@
-const intern = require('./lib/Intern')
-const manager = require('./lib/Manager')
-const engineer = require('./lib/Engineer')
-const employee = require('./lib/Employee')
+const Intern = require('./lib/Intern')
+const Manager = require('./lib/Manager')
+const Engineer = require('./lib/Engineer')
+const Employee = require('./lib/Employee')
 const inquirer = require('inquirer')
+const team = require('./util/generateHtml')
+
 
 const Begin = async () => {
     try {
@@ -31,9 +33,11 @@ const Begin = async () => {
             }
         ])
        switch (addManager.team){
-        case "Engineer": addEngineer
+        case "Engineer": addEngineer;
+        console.log("add engineer!")
         break;
-        case "Intern": addIntern
+        case "Intern": addIntern;
+        console.log("add intern!")
         break;
        }
         function addEngineer() {
