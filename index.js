@@ -4,15 +4,15 @@ const Engineer = require('./lib/Engineer')
 const Employee = require('./lib/Employee')
 const inquirer = require('inquirer')
 const team = require('./util/generateHtml')
-const empArray = new Employee[]
+const employeeArray = []
 
 
 const Begin = async () => {
     try {
-        inquirer.prompt([
+        const empQuestions = await inquirer.prompt([
             {
-                type: "confirm",
-                message: "Wat is the team member's?",
+                type: "input",
+                message: "What is the team member's name?",
                 name: "name",
             }, {
                 type: "input",
@@ -22,29 +22,61 @@ const Begin = async () => {
                 type: "input",
                 message: "Email address:",
                 name: "email"
+            },
+            {
+                type: "list",
+                message: "What is their role?",
+                name: "role",
+                choices: ["Manager", "Engineer", "Intern"]
             }
         ])
+        console.log(empQuestions)
 
-        switch (addManager.team) {
-            case "Engineer": addEngineer;
-                console.log("add engineer!")
+        switch (empQuestions.role) {
+            case "Manager": addManager();
+                // console.log("add manager!")
                 break;
-            case "Intern": addIntern;
-                console.log("add intern!")
+            case "Engineer": addEngineer();
+                // console.log("add engineer!")
+                break;
+            case "Intern": addIntern();
+                // console.log("add intern!")
                 break;
         }
 
-
-    }
-        
     } catch (err) {
-    console.log(err)
-}
+        console.log(err)
+    }
 
 }
-
-function addEmployee() {
-
+function addAnotherEmp(answers) {
+    if (answers.addNew === "No") {
+        console.log("Goodbye")
+    } else {
+    Begin()
+    }
+}
+function addManager() {
+    inquirer.prompt([
+        {
+            type: "input",
+            message: "Phone number:",
+            name: "number"
+        }, {
+            type: "confirm",
+            message: "Would you like to add a team members?",
+            name: "addNew",
+        }
+    ]).then((answers) => {
+        const manager = new Manager(answers.name, answers.id, answers.email, answers.role, answers.number)
+        employeeArray.push(manager)
+        console.log(manager)
+        if (answers.addNew) {
+            Begin()
+        } else {
+            console.log("Thank you. Goodbye")
+        }
+     })
 }
 
 function addIntern() {
@@ -55,42 +87,50 @@ function addIntern() {
             name: "school",
             choices: ["University of Washington", "Central Washington University", "Washington University", "Unversity of Community College"]
         }, {
-            type: "list",
-            message: "Would you like to add any more team members?",
-            name: ["No", "Engineer", "Intern"]
+            type: "confirm",
+            message: "Would you like to add a team members?",
+            name: "addNew"
         }
-    ])
+    ]).then((answers) => {
+        const intern = new Intern(answers.name, answers.id, answers.email, answers.role, answers.school)
+        employeeArray.push(intern)
+        if (answers.addNew) {
+            Begin()
+        } else {
+            console.log("Goodbye")
+        }
+    })
 }
 
 function addEngineer(answers) {
     const engineerAns = inquirer.prompt([
-         {
-{
-             type: "input",
-             message: "Github Username:",
-             name: "github"
-         }, {
-             type: "list",
-             message: "Would you like to add any more team members?",
-             name: ["No", "Engineer","Intern"]
-         }
-     ])
-    const engineer = new Engineer(answers.name, answers.id, answers.email, answers.github)
-}
+        {
+            type: "input",
+            message: "Github Username:",
+            name: "github"
+        }, {
+            type: "confirm",
+            message: "Would you like to add a team members?",
+            name: "addNew",
+        }
+    ]).then((answers) => {
+        const engineer = new Engineer(answers.name, answers.id, answers.email, answers.role, answers.github)
+        employeeArray.push(engineer)
+        if (answers.addNew) {
+            Begin()
+        } else {
+            console.log("G'Day")
+        }
+        // function (err) {
+        //     if (err) {
+        //         console.error(err)
+        //     } else {
+        //         console.log('Answers logged!')
+        //     }
+        // }
 
+    })
 
-function addManager() {
-    inquirer.prompt([ {
-        type: "input",
-            message: "Phone number:",
-                name: "number"
-    }, {
-        type: "list",
-            message: "Please add a team member:",
-                name: "team",
-                    choices: ["Engineer", "Intern"]
-    }
-    ])
 }
 
 
