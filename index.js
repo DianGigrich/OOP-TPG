@@ -35,29 +35,23 @@ const Begin = async () => {
         // console.log(empQuestions)
 
         switch (empQuestions.role) {
-            case "Manager": addManager();
+            case "Manager": addManager(employee);
                 break;
-            case "Engineer": addEngineer(empQuestions);
+            case "Engineer": addEngineer(employee);
                 break;
-            case "Intern": addIntern(empQuestions);
+            case "Intern": addIntern(employee);
                 break;
         } if ("addNew" === false) {
             fs.writeFile("index.html", team)
         }
+        // console.log(employeeArray)
 
     } catch (err) {
         console.log(err)
     }
 
 }
-// function addAnotherEmp(answers) {
-//     if (answers.addNew === "No") {
-//         console.log("Goodbye")
-//     } else {
-//     Begin()
-//     }
-// }
-function addManager() {
+function addManager(answers) {
     inquirer.prompt([
         {
             type: "input",
@@ -69,11 +63,11 @@ function addManager() {
             name: "addNew",
         }
     ]).then((response) => {
-        const manager = new Manager( parseInt(response.number))
+        const manager = new Manager(answers.name, answers.id, answers.email, parseInt(response.number))
         employeeArray.push(manager)
         console.log(manager)
         console.log(answers)
-        if (answers.addNew) {
+        if (response.addNew) {
             Begin()
         } else {
             // fs.writeFile("index.html", team)
@@ -98,7 +92,7 @@ function addIntern(answers) {
         const intern = new Intern(answers.name, answers.id, answers.email, response.school)
         employeeArray.push(intern)
         console.log(answers)
-        if (answers.addNew) {
+        if (response.addNew) {
             Begin()
         } else {
             // fs.writeFile("index.html", team)
@@ -121,7 +115,7 @@ function addEngineer(answers) {
     ]).then((response) => {
         const engineer = new Engineer(answers.name, answers.id, answers.email, response.github)
         employeeArray.push(engineer)
-        if (answers.addNew) {
+        if (response.addNew) {
             Begin()
         } else {
             // fs.writeFile("index.html", team)
