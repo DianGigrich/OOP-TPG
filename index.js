@@ -4,7 +4,7 @@ const Engineer = require('./lib/Engineer')
 const Employee = require('./lib/Employee')
 const inquirer = require('inquirer')
 const fs = require('fs')
-const team = require('./util/generateHtml')
+const generateTeam = require('./util/generateHtml')
 const employeeArray = []
 
 
@@ -15,7 +15,13 @@ const Begin = async () => {
                 type: "input",
                 message: "What is the team member's name?",
                 name: "name",
-            }, {
+            },
+            // {
+            //     type: "input",
+            //     message: "What do you want to name your team:",
+            //     name: "teamName"
+            // },
+            {
                 type: "input",
                 message: "Enter their employee ID:",
                 name: "id"
@@ -31,19 +37,17 @@ const Begin = async () => {
                 choices: ["Manager", "Engineer", "Intern"]
             }
         ])
-        const employee = new Employee(empQuestions.name, empQuestions.id, empQuestions.email)
+ 
         // console.log(empQuestions)
 
         switch (empQuestions.role) {
-            case "Manager": addManager(employee);
+            case "Manager": addManager(empQuestions);
                 break;
-            case "Engineer": addEngineer(employee);
+            case "Engineer": addEngineer(empQuestions);
                 break;
-            case "Intern": addIntern(employee);
+            case "Intern": addIntern(empQuestions);
                 break;
-        } if ("addNew" === false) {
-            fs.writeFile("index.html", team)
-        }
+        } 
         // console.log(employeeArray)
 
     } catch (err) {
@@ -70,7 +74,9 @@ function addManager(answers) {
         if (response.addNew) {
             Begin()
         } else {
-            // fs.writeFile("index.html", team)
+            fs.writeFile(`./team/${answers.teamName}.html`, generateTeam(employeeArray), (err)=>{
+                err ? console.log(err) : console.log("Your file was created!")
+            });
             console.log("Thank you. Goodbye")
         }
     })
@@ -95,8 +101,9 @@ function addIntern(answers) {
         if (response.addNew) {
             Begin()
         } else {
-            // fs.writeFile("index.html", team)
-            console.log("Goodbye")
+            fs.writeFile(`./team/${answers.teamName}.html`, generateTeam(employeeArray), (err)=>{
+            err ? console.log(err) : console.log("Your file was created!")
+        });
         }
     })
 }
@@ -118,8 +125,9 @@ function addEngineer(answers) {
         if (response.addNew) {
             Begin()
         } else {
-            // fs.writeFile("index.html", team)
-            console.log("G'Day")
+            fs.writeFile(`./team/${answers.teamName}.html`, generateTeam(employeeArray), (err)=>{
+                err ? console.log(err) : console.log("Your file was created!")
+            });
         }
 
     })
