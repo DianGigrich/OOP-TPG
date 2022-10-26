@@ -3,6 +3,7 @@ const Manager = require('./lib/Manager')
 const Engineer = require('./lib/Engineer')
 const Employee = require('./lib/Employee')
 const inquirer = require('inquirer')
+const fs = require('fs')
 const team = require('./util/generateHtml')
 const employeeArray = []
 
@@ -30,18 +31,18 @@ const Begin = async () => {
                 choices: ["Manager", "Engineer", "Intern"]
             }
         ])
-        console.log(empQuestions)
+        const employee = new Employee(empQuestions.name, empQuestions.id, empQuestions.email)
+        // console.log(empQuestions)
 
         switch (empQuestions.role) {
             case "Manager": addManager();
-                // console.log("add manager!")
                 break;
-            case "Engineer": addEngineer();
-                // console.log("add engineer!")
+            case "Engineer": addEngineer(empQuestions);
                 break;
-            case "Intern": addIntern();
-                // console.log("add intern!")
+            case "Intern": addIntern(empQuestions);
                 break;
+        } if ("addNew" === false) {
+            fs.writeFile("index.html", team)
         }
 
     } catch (err) {
@@ -49,13 +50,13 @@ const Begin = async () => {
     }
 
 }
-function addAnotherEmp(answers) {
-    if (answers.addNew === "No") {
-        console.log("Goodbye")
-    } else {
-    Begin()
-    }
-}
+// function addAnotherEmp(answers) {
+//     if (answers.addNew === "No") {
+//         console.log("Goodbye")
+//     } else {
+//     Begin()
+//     }
+// }
 function addManager() {
     inquirer.prompt([
         {
@@ -67,19 +68,21 @@ function addManager() {
             message: "Would you like to add a team members?",
             name: "addNew",
         }
-    ]).then((answers) => {
-        const manager = new Manager(answers.name, answers.id, answers.email, answers.role, answers.number)
+    ]).then((response) => {
+        const manager = new Manager( parseInt(response.number))
         employeeArray.push(manager)
         console.log(manager)
+        console.log(answers)
         if (answers.addNew) {
             Begin()
         } else {
+            // fs.writeFile("index.html", team)
             console.log("Thank you. Goodbye")
         }
-     })
+    })
 }
 
-function addIntern() {
+function addIntern(answers) {
     inquirer.prompt([
         {
             type: "list",
@@ -91,19 +94,21 @@ function addIntern() {
             message: "Would you like to add a team members?",
             name: "addNew"
         }
-    ]).then((answers) => {
-        const intern = new Intern(answers.name, answers.id, answers.email, answers.role, answers.school)
+    ]).then((response) => {
+        const intern = new Intern(answers.name, answers.id, answers.email, response.school)
         employeeArray.push(intern)
+        console.log(answers)
         if (answers.addNew) {
             Begin()
         } else {
+            // fs.writeFile("index.html", team)
             console.log("Goodbye")
         }
     })
 }
 
 function addEngineer(answers) {
-    const engineerAns = inquirer.prompt([
+    inquirer.prompt([
         {
             type: "input",
             message: "Github Username:",
@@ -113,21 +118,15 @@ function addEngineer(answers) {
             message: "Would you like to add a team members?",
             name: "addNew",
         }
-    ]).then((answers) => {
-        const engineer = new Engineer(answers.name, answers.id, answers.email, answers.role, answers.github)
+    ]).then((response) => {
+        const engineer = new Engineer(answers.name, answers.id, answers.email, response.github)
         employeeArray.push(engineer)
         if (answers.addNew) {
             Begin()
         } else {
+            // fs.writeFile("index.html", team)
             console.log("G'Day")
         }
-        // function (err) {
-        //     if (err) {
-        //         console.error(err)
-        //     } else {
-        //         console.log('Answers logged!')
-        //     }
-        // }
 
     })
 
