@@ -16,11 +16,7 @@ const Begin = async () => {
                 message: "What is the team member's name?",
                 name: "name",
             },
-            // {
-            //     type: "input",
-            //     message: "What do you want to name your team:",
-            //     name: "teamName"
-            // },
+
             {
                 type: "input",
                 message: "Enter their employee ID:",
@@ -37,8 +33,8 @@ const Begin = async () => {
                 choices: ["Manager", "Engineer", "Intern"]
             }
         ])
- 
-        // console.log(empQuestions)
+
+        // proceed to unique questions per role
 
         switch (empQuestions.role) {
             case "Manager": addManager(empQuestions);
@@ -47,14 +43,14 @@ const Begin = async () => {
                 break;
             case "Intern": addIntern(empQuestions);
                 break;
-        } 
-        // console.log(employeeArray)
+        }
 
     } catch (err) {
         console.log(err)
     }
 
 }
+// create and add a manager to employee array
 function addManager(answers) {
     inquirer.prompt([
         {
@@ -62,26 +58,27 @@ function addManager(answers) {
             message: "Phone number:",
             name: "number"
         }, {
+            type: "input",
+            message: "What do you want to name your team:",
+            name: "teamName"
+        }, {
             type: "confirm",
             message: "Would you like to add a team members?",
             name: "addNew",
         }
     ]).then((response) => {
-        const manager = new Manager(answers.name, answers.id, answers.email, parseInt(response.number))
+        const manager = new Manager(answers.name, answers.id, answers.email, parseInt(response.number), response.teamName)
         employeeArray.push(manager)
         console.log(manager)
-        console.log(answers)
         if (response.addNew) {
             Begin()
         } else {
-            fs.writeFile(`./team/${answers.teamName}.html`, generateTeam(employeeArray), (err)=>{
-                err ? console.log(err) : console.log("Your file was created!")
-            });
-            console.log("Thank you. Goodbye")
+            writeHTML()
         }
     })
 }
 
+// create and add an intern to employee array
 function addIntern(answers) {
     inquirer.prompt([
         {
@@ -97,17 +94,16 @@ function addIntern(answers) {
     ]).then((response) => {
         const intern = new Intern(answers.name, answers.id, answers.email, response.school)
         employeeArray.push(intern)
-        console.log(answers)
+        console.log(intern)
         if (response.addNew) {
             Begin()
         } else {
-            fs.writeFile(`./team/${answers.teamName}.html`, generateTeam(employeeArray), (err)=>{
-            err ? console.log(err) : console.log("Your file was created!")
-        });
+            writeHTML()
         }
     })
 }
 
+// create and add an engineer to employee array
 function addEngineer(answers) {
     inquirer.prompt([
         {
@@ -122,16 +118,23 @@ function addEngineer(answers) {
     ]).then((response) => {
         const engineer = new Engineer(answers.name, answers.id, answers.email, response.github)
         employeeArray.push(engineer)
+        console.log(engineer)
         if (response.addNew) {
             Begin()
         } else {
-            fs.writeFile(`./team/${answers.teamName}.html`, generateTeam(employeeArray), (err)=>{
-                err ? console.log(err) : console.log("Your file was created!")
-            });
+            writeHTML()
         }
 
     })
 
+}
+
+// write html file
+function writeHTML() {
+
+    fs.writeFile(`./team/${employeeArray[0].teamName}.html`, generateTeam(employeeArray), (err) => {
+        err ? console.log(err) : console.log("Your file was created!")
+    })
 }
 
 
