@@ -15,7 +15,7 @@ Create an html page for your team through the command line! You can add a manage
 * [Questions](#questions)
       
 ## Installation
-
+node.js, npm install
       
 ## Usage
 Enter node index.js into the command line
